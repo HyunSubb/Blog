@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 public class PostController {
 
-    // 글 등록 -> POST Method
+    // 글 등록 -> POST Methodd
     @PostMapping("/posts")
     public Object post(@RequestBody @Valid PostCreate postCreate, BindingResult result) {
         // 데이터를 검증하는 이유
