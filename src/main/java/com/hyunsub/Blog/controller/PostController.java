@@ -1,6 +1,7 @@
 package com.hyunsub.Blog.controller;
 
 import com.hyunsub.Blog.request.PostCreate;
+import com.hyunsub.Blog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -16,9 +17,15 @@ import java.util.Map;
 @RestController
 public class PostController {
 
+    PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
+
     // 글 등록 -> POST Method
     @PostMapping("/posts")
-    public Object post(@RequestBody @Valid PostCreate postCreate) {
+    public Object post(@RequestBody @Valid PostCreate request) {
         // 데이터를 검증하는 이유
         // 1. client 개발자가 깜박할 수 있다. 실수로 값을 안보낼 수 있음.
         // 2. clinet bug로 값이 누락될 수 있다.
@@ -27,11 +34,13 @@ public class PostController {
         // 5. 서버 개발자의 편안함을 위해서
         // 검증과정을 거치고 나서야 DB에 저장될 수가 있는거임.
 
-        String title = postCreate.getTitle();
-        String content = postCreate.getContent();
+        String title = request.getTitle();
+        String content = request.getContent();
 
         log.info("title {}, content {}", title, content);
-        log.info("postCreate {}", postCreate);
+        log.info("postCreate {}", request);
+
+        postService.write(request);
 
         return "Hello World";
     }
