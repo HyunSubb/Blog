@@ -17,13 +17,15 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public void write(PostCreate postCreate) {
+    public Long write(PostCreate postCreate) {
         // postCreate(dto) -> Post(entity)
         Post post = Post.builder()
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
                 .build();
 
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+
+        return savedPost.getId();
     }
 }

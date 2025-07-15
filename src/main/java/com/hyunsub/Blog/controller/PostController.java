@@ -1,9 +1,12 @@
 package com.hyunsub.Blog.controller;
 
+import com.hyunsub.Blog.domain.Post;
 import com.hyunsub.Blog.request.PostCreate;
 import com.hyunsub.Blog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +28,7 @@ public class PostController {
 
     // 글 등록 -> POST Method
     @PostMapping("/posts")
-    public Object post(@RequestBody @Valid PostCreate request) {
+    public ResponseEntity<?> post(@RequestBody @Valid PostCreate request) {
         // 데이터를 검증하는 이유
         // 1. client 개발자가 깜박할 수 있다. 실수로 값을 안보낼 수 있음.
         // 2. clinet bug로 값이 누락될 수 있다.
@@ -34,14 +37,14 @@ public class PostController {
         // 5. 서버 개발자의 편안함을 위해서
         // 검증과정을 거치고 나서야 DB에 저장될 수가 있는거임.
 
-        String title = request.getTitle();
-        String content = request.getContent();
+        Long savedPostId = postService.write(request);
 
-        log.info("title {}, content {}", title, content);
-        log.info("postCreate {}", request);
-
-        postService.write(request);
-
-        return "Hello World";
+        Map<String, Long> response = new HashMap<>();
+        response.put("postId", savedPostId);
+        // Case 1. 저장한 데이터 Entity로 응답하기
+        // Case 2. 저장한 데이터의 id를 응답하기
+        // Case 3. 응답 필요 없음.
+        // Bad Case. 서버에서 반드시 이렇게 할거다! (X) -> 서버에서 유연하게 대응하는 게 좋다.
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
