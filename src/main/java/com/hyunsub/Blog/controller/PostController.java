@@ -47,4 +47,10 @@ public class PostController {
         // Bad Case. 서버에서 반드시 이렇게 할거다! (X) -> 서버에서 유연하게 대응하는 게 좋다.
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<Post> get(@PathVariable Long postId) {
+        Post post = postService.get(postId);
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
 }
