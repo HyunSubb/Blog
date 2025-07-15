@@ -2,6 +2,7 @@ package com.hyunsub.Blog.controller;
 
 import com.hyunsub.Blog.domain.Post;
 import com.hyunsub.Blog.request.PostCreate;
+import com.hyunsub.Blog.response.PostResponse;
 import com.hyunsub.Blog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +49,17 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // 단건 조회 API (1개의 글 Post를 가져오는 기능)
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<Post> get(@PathVariable Long postId) {
-        Post post = postService.get(postId);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+    public ResponseEntity<PostResponse> get(@PathVariable Long postId) {
+        PostResponse postResponse = postService.get(postId);
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
+    }
+
+    // 복수 조회 API (여러 개의 글 post를 가져오는 기능)
+    @GetMapping("/posts")
+    public ResponseEntity<?> get() {
+        List<PostResponse> postResponses = postService.getList();
+        return new ResponseEntity<>(postResponses, HttpStatus.OK);
     }
 }
