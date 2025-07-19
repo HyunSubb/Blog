@@ -18,5 +18,5 @@ public class PostSearch {
     private Integer page = 1;
 
     @Builder.Default
-    private Integer size = 5;
+    private Integer size = 3;
 }

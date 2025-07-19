@@ -2,6 +2,7 @@ package com.hyunsub.Blog.controller;
 
 import com.hyunsub.Blog.domain.Post;
 import com.hyunsub.Blog.request.PostCreate;
+import com.hyunsub.Blog.request.PostEdit;
 import com.hyunsub.Blog.request.PostSearch;
 import com.hyunsub.Blog.response.PostResponse;
 import com.hyunsub.Blog.service.PostService;
@@ -61,8 +62,20 @@ public class PostController {
     // 내가 GET /posts와 같은 조회 요청에서 page와 size 정보를 보내려면, URL 쿼리 파라미터(GET 요청의 표준)를 사용해야 한다.
     // 나는 json으로 보내고 계속 뭔가 안되서 오류인줄 알았는데 내가 잘못한 거 였다.
     @GetMapping("/posts")
-    public ResponseEntity<?> get(@Valid PostSearch postSearch) {
+    public ResponseEntity<?> getList(@Valid PostSearch postSearch) {
         List<PostResponse> postResponses = postService.getList(postSearch);
         return new ResponseEntity<>(postResponses, HttpStatus.OK);
     }
+
+    // 글 수정 API
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(postId, postEdit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable Long postId) {
+        postService.delete(postId);
+    }
+
 }

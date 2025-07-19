@@ -21,11 +21,16 @@ public class Post {
     @Lob // DB에서는 Long Text 형식으로 저장되게 하는 것.
     private String content;
 
-    public void changeTitle(String title) {
+    public void updateTitle(String title) {
         this.title = title; // 현재 엔티티 인스턴스의 title 필드를 직접 변경
     }
 
-    public void changeContent(String content) {
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
         this.content = content;
     }
 }

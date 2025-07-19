@@ -3,9 +3,11 @@ package com.hyunsub.Blog.service;
 import com.hyunsub.Blog.domain.Post;
 import com.hyunsub.Blog.repository.PostRepository;
 import com.hyunsub.Blog.request.PostCreate;
+import com.hyunsub.Blog.request.PostEdit;
 import com.hyunsub.Blog.request.PostSearch;
 import com.hyunsub.Blog.response.PostResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -75,12 +77,42 @@ public class PostService {
                 Sort.by(Sort.Direction.DESC, "id") // ID 기준으로 내림차순 정렬 (최신 글이 먼저 오도록)
         );
 
-        return postRepository.findAll(pageable).stream() // 1. 모든 Post 엔티티를 조회하고 스트림 생성
-                .map(post -> PostResponse.builder() // 2. 각 Post 엔티티를 PostResponse DTO로 변환
+        // QueryDSL로 구현된 커스텀 메서드 호출
+        Page<Post> postPage = postRepository.getPostPageBySearchCondition(postSearch, pageable);
+
+        return postPage.getContent().stream()
+                .map(post -> PostResponse.builder()
                         .id(post.getId())
                         .title(post.getTitle())
                         .content(post.getContent())
                         .build())
-                .collect(Collectors.toList()); // 3. 변환된 DTO들을 리스트로 수집
+                .collect(Collectors.toList());
+
+//        // 일반 JPA DATA로 구현한 메서드 호출
+//        return postRepository.findAll(pageable).stream() // 1. 모든 Post 엔티티를 조회하고 스트림 생성
+//                .map(post -> PostResponse.builder() // 2. 각 Post 엔티티를 PostResponse DTO로 변환
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .content(post.getContent())
+//                        .build())
+//                .collect(Collectors.toList()); // 3. 변환된 DTO들을 리스트로 수집
+    }
+
+    public void edit(Long postId, PostEdit postEdit) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        String title = postEdit.getTitle() != null ? postEdit.getTitle() : post.getTitle();
+        String content = postEdit.getContent() != null ? postEdit.getContent() : post.getContent();
+
+        post.update(title, content);
+    }
+
+    public void delete(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        // -> 존재하는 경우
+        postRepository.delete(post);
     }
 }

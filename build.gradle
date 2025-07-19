@@ -17,6 +17,8 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // QueryDSL QClass 생성을 위한 processor path 설정
+    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -27,12 +29,53 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
+
+    runtimeOnly 'com.h2database:h2'
+
+    // --- QueryDSL 의존성 추가 시작 ---
+    // QueryDSL JPA 코어 라이브러리 (Jakarta 버전을 명시해야 합니다)
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+
+    // QueryDSL APT (Annotation Processor Tool)
+    // QClass 생성을 담당하며, Jakarta 버전을 명시해야 합니다.
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
+    // QueryDSL이 QClass를 생성할 때 필요한 어노테이션 프로세서들 (Jakarta 버전)
+    // Spring Boot 3.x (Jakarta EE) 환경에서 @Generated, @Entity 등의 어노테이션을
+    // QueryDSL APT가 인식하도록 돕습니다. 없으면 NoClassDefFoundError 등이 발생할 수 있습니다.
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    // --- QueryDSL 의존성 추가 끝 ---
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+// --- QueryDSL QClass 생성 디렉토리 및 소스셋 설정 시작 ---
+// QueryDSL QClass가 생성될 디렉토리 정의
+// 보통 'build/generated/querydsl' 경로를 많이 사용하며, .gitignore에 추가하여 형상 관리에서 제외합니다.
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ] // main 소스셋에 QClass 생성 디렉토리를 추가
+}
+
+// QClass 생성 태스크가 'clean' 태스크에 종속되도록 설정하여,
+// 빌드 시 이전에 생성된 QClass가 삭제되고 새로 생성되도록 합니다.
+// (이는 문제 해결에 도움이 될 수 있습니다.)
+clean {
+    delete file(querydslDir) // clean 태스크 실행 시 querydslDir 삭제
+}
+
+// QClass 생성을 위한 annotationProcessorPath 설정 (선택 사항이지만 명시적으로 지정하는 것이 좋음)
+tasks.withType(JavaCompile) {
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
+// --- QueryDSL QClass 생성 디렉토리 및 소스셋 설정 끝 ---
 
 tasks.named('test') {
     useJUnitPlatform()
