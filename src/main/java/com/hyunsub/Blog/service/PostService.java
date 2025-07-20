@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 public class PostService {
 
     private final PostRepository postRepository;
@@ -99,6 +101,7 @@ public class PostService {
 //                .collect(Collectors.toList()); // 3. 변환된 DTO들을 리스트로 수집
     }
 
+
     public void edit(Long postId, PostEdit postEdit) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFound());
@@ -106,7 +109,10 @@ public class PostService {
         String title = postEdit.getTitle() != null ? postEdit.getTitle() : post.getTitle();
         String content = postEdit.getContent() != null ? postEdit.getContent() : post.getContent();
 
+        log.info("Updating Post with ID: {} - Old Title: {}, New Title: {} | Old Content: {}, New Content: {}",
+                 postId, post.getTitle(), title, post.getContent(), content);
         post.update(title, content);
+        log.info("Post updated in memory. Title: {}, Content: {}", post.getTitle(), post.getContent());
     }
 
     public void delete(Long postId) {

@@ -16,7 +16,7 @@ const router = createRouter({
             component: () => import('../views/HomeView.vue')
         },
         {
-            path: '/count',       // 카운트 예제 경로
+            path: '/count',   // 카운트 예제 경로
             name: 'count',    // 라우트 이름
             component: () => import('../views/PlusCount.vue')
         },
@@ -24,7 +24,17 @@ const router = createRouter({
             path: '/write', // '/write' 경로
             name: 'write',  // 라우트 이름
             component: () => import('../views/WriteView.vue')
-        }
+        },
+        {
+            path: "/posts/:id", // 동적 파라미터 :id 추가
+            name: "read",
+            component: () => import('../views/ReadView.vue')
+        },
+        {
+            path: '/edit/:id', // '/write' 경로
+            name: 'edit',  // 라우트 이름
+            component: () => import('../views/EditView.vue')
+        },
     ]
 })
 

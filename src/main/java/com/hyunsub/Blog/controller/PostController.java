@@ -72,6 +72,7 @@ public class PostController {
     // 글 수정 API
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        log.info(postId + "/" + postEdit);
         postService.edit(postId, postEdit);
     }
 
