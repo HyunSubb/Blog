@@ -25,6 +25,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import router from "@/router";
 
 // 기능 로직 없이, 순수하게 템플릿의 스타일링만 변경했습니다.
 const title = ref('');
@@ -38,7 +39,9 @@ const write = function() {
   axios.post("http://localhost:8080/posts", {
     title: title.value,
     content: content.value
-  });
+  }).then(() => {
+    router.replace({ name: 'home' });
+  })
 }
 
 </script>

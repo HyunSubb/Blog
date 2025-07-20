@@ -10,7 +10,7 @@ spring:
 
   jpa: # Java Persistence API (Hibernate 같은 ORM 프레임워크 설정)
     hibernate:
-      ddl-auto: create # JPA 실행 시 DDL(스키마) 자동 생성/업데이트 (개발 중 편리)
+      ddl-auto: validate # JPA 실행 시 DDL(스키마) 자동 생성/업데이트 (개발 중 편리)
       # 실제 운영 환경에서는 'none' 또는 'validate'를 사용하는 것이 일반적입니다.
       # 'create', 'create-drop', 'none', 'validate', 'update'
     show-sql: true # JPA가 생성하는 SQL 쿼리 로그 출력

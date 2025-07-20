@@ -28,6 +28,9 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/write">글 작성</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/count">카운트 예제</router-link>
+          </li>
         </ul>
       </div>
     </div>
