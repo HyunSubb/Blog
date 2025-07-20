@@ -8,6 +8,7 @@ import com.hyunsub.Blog.response.PostResponse;
 import com.hyunsub.Blog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -65,7 +66,7 @@ public class PostController {
     // 나는 json으로 보내고 계속 뭔가 안되서 오류인줄 알았는데 내가 잘못한 거 였다.
     @GetMapping("/posts")
     public ResponseEntity<?> getList(@Valid PostSearch postSearch) {
-        List<PostResponse> postResponses = postService.getList(postSearch);
+        Page<PostResponse> postResponses = postService.getList(postSearch);
         return new ResponseEntity<>(postResponses, HttpStatus.OK);
     }
 

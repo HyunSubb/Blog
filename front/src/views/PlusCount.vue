@@ -25,11 +25,44 @@ const increment = () => {
 </script>
 
 <style scoped>
-/* 이 컴포넌트에만 적용되는 스타일 */
 div {
-  padding: 20px;
+  text-align: center;
+  padding: 25px;
+  background-color: #f8f8f8; /* 배경색 변경 */
+  border: 1px solid #eee; /* 얇은 경계선 */
+  border-radius: 5px; /* 모서리 둥글기 */
+  box-shadow: none; /* 그림자 제거 */
+  max-width: 300px; /* 너비 조정 */
+  margin: 50px auto;
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Nanum Gothic', sans-serif;
 }
+
+p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+p:last-of-type {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333; /* 강조색 대신 일반 텍스트 색상 */
+  margin-top: 15px;
+}
+
 button {
-  margin-right: 10px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  background-color: #007bff; /* 강조색 */
+  border-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 </style>

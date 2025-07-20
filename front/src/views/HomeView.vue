@@ -28,6 +28,21 @@
         </div>
       </div>
     </div>
+
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation example" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+          <a class="page-link" href="#" @click.prevent="fetchPosts(currentPage - 1)">이전</a>
+        </li>
+        <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: page === currentPage }">
+          <a class="page-link" href="#" @click.prevent="fetchPosts(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+          <a class="page-link" href="#" @click.prevent="fetchPosts(currentPage + 1)">다음</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -40,16 +55,28 @@ const router = useRouter();
 
 const posts = ref([]);
 const isPostLoading = ref({}); // 특정 게시글 로딩 상태를 관리하기 위한 객체
+const totalPages = ref(0); // 총 페이지 수
+const currentPage = ref(1); // 현재 페이지
 
 onMounted(async () => {
+  await fetchPosts(currentPage.value);
+});
+
+const fetchPosts = async (page) => {
   try {
-    const response = await axios.get('http://localhost:8080/posts?page=1&size=5');
-    posts.value = response.data;
+    const response = await axios.get(`http://localhost:8080/posts?page=${page}&size=10`);
+    posts.value = response.data.content;
+    totalPages.value = response.data.totalPages;
+    currentPage.value = page;
+    console.log('response:', posts.value);
+    console.log('게시글 목록:', response.data);
+    console.log('총 게시글 수:', response.data.totalElements);
+    console.log('총 페이지 수:', response.data.totalPages);
   } catch (error) {
     console.error('게시글을 불러오는 데 실패했습니다:', error);
     alert('게시글 목록을 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
   }
-});
+};
 
 // 게시글 제목 클릭 시 상세 데이터를 미리 불러온 후 이동
 const moveToRead = async (id) => {
@@ -76,17 +103,78 @@ const moveToRead = async (id) => {
     isPostLoading.value[id] = false;
   }
 };
+
+// const moveToPage = (page) => {
+//
+// }
 </script>
 
 <style scoped>
 .container {
-  max-width: 900px;
+  max-width: 760px; /* 디시인사이드 본문 너비와 유사하게 조정 */
+  margin: 40px auto; /* 중앙 정렬 및 상하 여백 */
+  padding: 0 10px; /* 좌우 패딩 */
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Nanum Gothic', sans-serif; /* 폰트 변경 */
 }
+
+h1 {
+  text-align: center;
+  color: #333; /* 일반적인 텍스트 색상 */
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee; /* 하단 구분선 */
+}
+
+.card {
+  border: none; /* 카드 자체의 경계선 제거 */
+  border-bottom: 1px solid #eee; /* 하단 구분선으로 목록 느낌 */
+  border-radius: 0; /* 모서리 둥글기 제거 */
+  box-shadow: none; /* 그림자 제거 */
+  transition: background-color 0.1s ease-in-out; /* 호버 시 부드러운 전환 */
+  margin-bottom: 0; /* 카드 간 간격 제거 (border-bottom으로 대체) */
+}
+
+.card:last-child {
+  border-bottom: none; /* 마지막 카드는 하단 구분선 제거 */
+}
+
+.card:hover {
+  background-color: #f9f9f9; /* 호버 시 배경색 변경 */
+  transform: none; /* 떠오르는 효과 제거 */
+  box-shadow: none; /* 그림자 제거 */
+}
+
+.card-body {
+  padding: 15px 0; /* 패딩 조정 */
+}
+
 .card-title {
   cursor: pointer;
+  font-size: 1.1rem; /* 폰트 크기 조정 */
+  color: #333; /* 기본 텍스트 색상 */
+  line-height: 1.4; /* 줄 간격 */
+  margin-bottom: 0;
+  font-weight: 500;
+  transition: color 0.1s ease-in-out;
 }
+
+.card-title:hover {
+  color: #007bff; /* 호버 시 강조색 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
 .card-title.text-muted {
   cursor: not-allowed;
+  color: #999 !important; /* 더 연한 회색 */
+}
+
+.spinner-border {
+  vertical-align: middle;
+  color: #007bff; /* 스피너 색상 */
+  width: 1rem;
+  height: 1rem;
 }
 </style>
 

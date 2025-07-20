@@ -66,7 +66,7 @@ public class PostService {
      *
      * 4. 모든 변환이 끝나면, 변환된 PostResponse DTO들을 하나의 List<PostResponse>로 묶어서 반환합니다. ( .collect(Collectors.toList()) )
      */
-    public List<PostResponse> getList(PostSearch postSearch) {
+    public Page<PostResponse> getList(PostSearch postSearch) {
         // 글이 너무 많은 경우 -> 비용이 너무 많이 든다.
         // 글이 100,000,000 -> DB 글 모두를 조회하는 경우 -> DB가 뻗을 수 있다.
         // DB -> 애플리케이션 서버로 전달하는 시간, 트래픽 비용 등이 많이 발생할 수 있다.
@@ -83,13 +83,22 @@ public class PostService {
         // QueryDSL로 구현된 커스텀 메서드 호출
         Page<Post> postPage = postRepository.getPostPageBySearchCondition(postSearch, pageable);
 
-        return postPage.getContent().stream()
-                .map(post -> PostResponse.builder()
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .build())
-                .collect(Collectors.toList());
+//        return postPage.getContent().stream()
+//                .map(post -> PostResponse.builder()
+//                        .id(post.getId())
+//                        .title(post.getTitle())
+//                        .content(post.getContent())
+//                        .build())
+//                .collect(Collectors.toList());
+
+        // Page<Post>를 Page<PostResponse>로 매핑합니다.
+        // Page 인터페이스의 map() 메서드는 내부 콘텐츠(List<Post>)를 변환(Post -> PostResponse)하면서
+        // 페이징 정보(총 요소 수, 총 페이지 수 등)를 그대로 유지하여 새로운 Page<PostResponse>를 반환합니다.
+        return postPage.map(post -> PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build());
 
 //        // 일반 JPA DATA로 구현한 메서드 호출
 //        return postRepository.findAll(pageable).stream() // 1. 모든 Post 엔티티를 조회하고 스트림 생성
