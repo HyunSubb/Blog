@@ -1,8 +1,11 @@
 package com.hyunsub.Blog.controller;
 
+import com.hyunsub.Blog.exception.MyCustomException;
+import com.hyunsub.Blog.exception.PostNotFound;
 import com.hyunsub.Blog.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -43,4 +46,26 @@ public class ExceptionController {
                 .validation(validationErrors)
                 .build();
     }
+
+    // 스프링에서 제공하는 예외는 위에처럼 모두 예외처리 시 하나하나마다 예외처리를 해주고 우리 커스텀 예외 같은 경우는
+    // 최상위를 하나 만들어서 공통으로 처리하는 식으로 만든다.
+    @ResponseBody
+    @ExceptionHandler(MyCustomException.class)
+    public ResponseEntity<ErrorResponse> MyCustomException(MyCustomException e) {
+
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        ResponseEntity<ErrorResponse> responseEntity = ResponseEntity.status(statusCode).body(body);
+
+        return responseEntity;
+
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.hyunsub.Blog.service;
 
 import com.hyunsub.Blog.domain.Post;
+import com.hyunsub.Blog.exception.PostNotFound;
 import com.hyunsub.Blog.repository.PostRepository;
 import com.hyunsub.Blog.request.PostCreate;
 import com.hyunsub.Blog.request.PostEdit;
@@ -42,7 +43,7 @@ public class PostService {
 
     public PostResponse get(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(()-> new PostNotFound());
 
         PostResponse postResponse = PostResponse.builder()
                 .id(post.getId())
@@ -100,7 +101,7 @@ public class PostService {
 
     public void edit(Long postId, PostEdit postEdit) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         String title = postEdit.getTitle() != null ? postEdit.getTitle() : post.getTitle();
         String content = postEdit.getContent() != null ? postEdit.getContent() : post.getContent();
@@ -110,7 +111,7 @@ public class PostService {
 
     public void delete(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         // -> 존재하는 경우
         postRepository.delete(post);

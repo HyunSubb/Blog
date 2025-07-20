@@ -1,0 +1,20 @@
+# application-local.yml
+spring:
+
+  # MySQL 데이터베이스 설정
+  datasource:
+    url: jdbc:mysql://localhost:3306/Blog?serverTimezone=Asia/Seoul&characterEncoding=UTF-8 # MySQL 서버 주소, 포트, 데이터베이스 이름
+    username: root # MySQL 사용자 이름
+    password: yourpassword # MySQL 비밀번호
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스 이름
+
+  jpa: # Java Persistence API (Hibernate 같은 ORM 프레임워크 설정)
+    hibernate:
+      ddl-auto: create # JPA 실행 시 DDL(스키마) 자동 생성/업데이트 (개발 중 편리)
+      # 실제 운영 환경에서는 'none' 또는 'validate'를 사용하는 것이 일반적입니다.
+      # 'create', 'create-drop', 'none', 'validate', 'update'
+    show-sql: true # JPA가 생성하는 SQL 쿼리 로그 출력
+    properties:
+      hibernate:
+        format_sql: true # SQL 쿼리를 보기 좋게 포매팅
+        dialect: org.hibernate.dialect.MySQL8Dialect # 사용하는 MySQL 버전에 맞는 Dialect (MySQL 8 기준)

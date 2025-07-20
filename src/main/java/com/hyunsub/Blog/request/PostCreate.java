@@ -1,6 +1,7 @@
 package com.hyunsub.Blog.request;
 
 
+import com.hyunsub.Blog.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +18,12 @@ public class PostCreate {
 
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
+
+    public void validate() {
+        if(title.contains("바보")) {
+            throw new InvalidRequest("title", "바보는 제목에 사용하지 못해요.");
+        }
+    }
+
 }
 

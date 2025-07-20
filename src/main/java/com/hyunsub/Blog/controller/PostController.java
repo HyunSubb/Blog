@@ -40,6 +40,8 @@ public class PostController {
         // 5. 서버 개발자의 편안함을 위해서
         // 검증과정을 거치고 나서야 DB에 저장될 수가 있는거임.
 
+        request.validate(); // 예외 처리를 이런식으로도 가능하다.
+
         Long savedPostId = postService.write(request);
 
         Map<String, Long> response = new HashMap<>();
