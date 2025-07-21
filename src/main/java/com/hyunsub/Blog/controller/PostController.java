@@ -1,5 +1,6 @@
 package com.hyunsub.Blog.controller;
 
+import com.hyunsub.Blog.config.data.UserSession;
 import com.hyunsub.Blog.domain.Post;
 import com.hyunsub.Blog.request.PostCreate;
 import com.hyunsub.Blog.request.PostEdit;
@@ -31,7 +32,8 @@ public class PostController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(UserSession userSession) {
+        log.info("Resolver Test : {}", userSession.getName());
         return "test";
     }
 
