@@ -30,6 +30,11 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     // 글 등록 -> POST Method
     @PostMapping("/posts")
     public ResponseEntity<?> post(@RequestBody @Valid PostCreate request) {
