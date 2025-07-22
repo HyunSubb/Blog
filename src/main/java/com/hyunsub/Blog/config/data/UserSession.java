@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class UserSession {
-    public String name;
+    public Long id;
+    public String accessToken;
 }

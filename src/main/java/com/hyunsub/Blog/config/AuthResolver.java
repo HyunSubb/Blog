@@ -1,6 +1,7 @@
 package com.hyunsub.Blog.config;
 
 import com.hyunsub.Blog.config.data.UserSession;
+import com.hyunsub.Blog.exception.Unauthorized;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -25,8 +26,13 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        String accessToken = webRequest.getHeader("Authorization");
+        if(accessToken == null || accessToken.isEmpty()) {
+            throw new Unauthorized();
+        }
+
         UserSession userSession = new UserSession();
-        userSession.setName("hyunsub");
+        userSession.setAccessToken(accessToken);
         return userSession;
     }
 }

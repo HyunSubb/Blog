@@ -33,7 +33,7 @@ public class PostController {
 
     @GetMapping("/test")
     public String test(UserSession userSession) {
-        log.info("Resolver Test : {}", userSession.getName());
+        log.info("Resolver Test : {}", userSession.getAccessToken());
         return "test";
     }
 
